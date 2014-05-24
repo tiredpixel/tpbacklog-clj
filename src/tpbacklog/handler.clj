@@ -9,4 +9,4 @@
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (handler/api app-routes))
