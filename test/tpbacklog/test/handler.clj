@@ -1,14 +1,21 @@
 (ns tpbacklog.test.handler
   (:use clojure.test
         ring.mock.request  
-        tpbacklog.handler))
+        tpbacklog.handler)
+  (:require [cheshire.core :as json]))
 
 (deftest test-app
-  (testing "main route"
-    (let [response (app (request :get "/"))]
-      (is (= (:status response) 200))
-      (is (= (:body response) "Hello World"))))
+  (testing "statics"
+    (testing "home"
+      (let [response (app (request :get "/"))
+            body (json/parse-string (response :body) true)]
+        (println body)
+        (is (= (response :status) 200))
+        (is (= (body :service) "tpbacklog"))
+        (is (integer? (body :version)))
+        (is (java.util.Date. (body :time)))
+        (is (string? (body :msg))))))
   
-  (testing "not-found route"
+  (testing "not-found"
     (let [response (app (request :get "/invalid"))]
-      (is (= (:status response) 404)))))
+      (is (= (response :status) 404)))))
