@@ -3,10 +3,12 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.middleware.json :as middleware-json]
-            [tpbacklog.controllers.statics :as statics]))
+            [tpbacklog.controllers.statics :as statics]
+            [tpbacklog.controllers.stories :as stories]))
 
 (defroutes app-routes
   statics/routes
+  stories/routes
   (route/resources "/")
   (route/not-found "Not Found"))
 
