@@ -4,7 +4,7 @@
         tpbacklog.handler)
   (:require [cheshire.core :as json]))
 
-(deftest test-home
+(deftest test-r-home
   (testing "valid"
     (let [response (app (request :get "/"))
           body (json/parse-string (response :body) true)]

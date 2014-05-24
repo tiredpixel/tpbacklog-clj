@@ -3,11 +3,11 @@
 
 (def API_VERSION 1)
 
-(defn home []
+(defn- r-home []
   {:body {:service "tpbacklog"
           :version API_VERSION
           :time (.getTime (java.util.Date.))
           :msg "Hello. Welcome to the tpbacklog service."}})
 
 (defroutes routes
-  (GET "/" [] (home)))
+  (GET "/" [] (r-home)))
