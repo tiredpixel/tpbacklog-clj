@@ -14,7 +14,7 @@
 (def STORY_VALID {:points 8 :priority 1 :title "Style the iPlayer icon to be more pink."})
 
 (defn- seed-story [story]
-  (let [response (app (request :post "/stories" STORY_VALID))]
+  (let [response (app (request :post "/stories" story))]
     ((response :headers) "Location")))
 
 (defn- test-r-create-invalid [story]
