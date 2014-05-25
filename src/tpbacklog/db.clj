@@ -45,7 +45,6 @@
 
 (defn next-id [subspace]
   "Allocates and returns a new unique id within a subspace."
-  {:post [(integer? %)]}
   (wcar* (car/incr (path-seq subspace))))
 
 (defn set-rec [subspace id rec]
