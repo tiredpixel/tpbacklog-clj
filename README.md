@@ -3,6 +3,16 @@
 tpbacklog is a simple service for the storage and retrieval of task stories. It
 is written in [Clojure](http://clojure.org/).
 
+Various resource locations and response codes differ to the brief. See § API for
+details.
+
+There are many optimizations which could be made. However, as very approximate
+estimates for the current implementation run in development, stories can be
+created at `685.97 requests/s`, 10000 stories can be read in a single request at
+`1.06 s`, and priority-sorted stories to sum to 40 points given 10000
+stories in the db each of 8 points can be read at `79.76 requests/s`. See
+§ Benchmarks for more.
+
 
 ## Externals
 
@@ -219,3 +229,57 @@ to be returned.
     HTTP/1.1 204 No Content
     Date: Sun, 25 May 2014 15:58:33 GMT
     Server: Jetty(7.6.13.v20130916)
+
+
+## Benchmarks
+
+The following benchmarks are approximate. They are run in development with
+processes started using `foreman start` using
+[Ab](http://httpd.apache.org/docs/2.2/programs/ab.html) on a
+`MacBook Air Mid 2012 1.8 GHz Intel Core i5 8 GB 1600 MHz DDR3`.
+
+Creating 10000 stories:
+
+    Concurrency Level:      1
+    Time taken for tests:   14.578 seconds
+    Complete requests:      10000
+    Failed requests:        0
+    Write errors:           0
+    Total transferred:      1378894 bytes
+    Total POSTed:           2390000
+    HTML transferred:       0 bytes
+    Requests per second:    685.97 [#/sec] (mean)
+    Time per request:       1.458 [ms] (mean)
+    Time per request:       1.458 [ms] (mean, across all concurrent requests)
+    Transfer rate:          92.37 [Kbytes/sec] received
+                            160.10 kb/s sent
+                            252.48 kb/s total
+
+Reading priority-sorted stories to sum to 40 points 1000 times given 10000
+stories each of 8 points:
+
+    Concurrency Level:      1
+    Time taken for tests:   12.537 seconds
+    Complete requests:      1000
+    Failed requests:        0
+    Write errors:           0
+    Total transferred:      548000 bytes
+    HTML transferred:       391000 bytes
+    Requests per second:    79.76 [#/sec] (mean)
+    Time per request:       12.537 [ms] (mean)
+    Time per request:       12.537 [ms] (mean, across all concurrent requests)
+    Transfer rate:          42.69 [Kbytes/sec] received
+
+Reading all (10000) priority-sorted stories 10 times given 10000 stories:
+
+    Concurrency Level:      1
+    Time taken for tests:   9.454 seconds
+    Complete requests:      10
+    Failed requests:        0
+    Write errors:           0
+    Total transferred:      7801370 bytes
+    HTML transferred:       7800010 bytes
+    Requests per second:    1.06 [#/sec] (mean)
+    Time per request:       945.447 [ms] (mean)
+    Time per request:       945.447 [ms] (mean, across all concurrent requests)
+    Transfer rate:          805.81 [Kbytes/sec] received
