@@ -17,6 +17,34 @@
   (let [response (app (request :post "/stories" story))]
     ((response :headers) "Location")))
 
+; Test r-readall
+
+(deftest test-r-readall-non-empty
+  (testing "non-empty"
+    (let [story1 (assoc STORY_VALID :priority 1)
+          story2 (assoc STORY_VALID :priority 2)
+          story3 (assoc STORY_VALID :priority 3)
+          story4 (assoc STORY_VALID :priority 4)
+          story5 (assoc STORY_VALID :priority 5)
+          location5 (seed-story story5) ; order-dependent
+          location1 (seed-story story1)
+          location2 (seed-story story2)
+          location4 (seed-story story4)
+          location3 (seed-story story3)
+          response (app (request :get "/stories"))
+          body (json/parse-string (response :body) true)]
+      (is (= (response :status) 200))
+      (is (= body [story1 story2 story3 story4 story5])))))
+
+(deftest test-r-readall-empty
+  (testing "empty"
+    (let [response (app (request :get "/stories"))
+          body (json/parse-string (response :body) true)]
+      (is (= (response :status) 200))
+      (is (= body [])))))
+
+; Test r-create
+
 (defn- test-r-create-invalid [story]
   (let [response (app (request :post "/stories" story))]
     (is (= (response :status) 400))))
@@ -40,6 +68,8 @@
   (testing "invalid title missing"
     (test-r-create-invalid (dissoc STORY_VALID :title))))
 
+; Test r-read
+
 (defn- test-r-read-not-found [location]
   (let [response (app (request :get location))
         body (json/parse-string (response :body) true)]
@@ -56,6 +86,8 @@
     (test-r-read-not-found "/stories/666666666"))
   (testing "not-found non-integer"
     (test-r-read-not-found "/stories/X")))
+
+; Test r-update
 
 (defn- test-r-update-invalid [story2]
   (let [story STORY_VALID
@@ -98,6 +130,8 @@
     (test-r-update-invalid (assoc STORY_VALID :priority 0)))
   (testing "invalid title missing"
     (test-r-update-invalid (dissoc STORY_VALID :title))))
+
+; Test r-delete
 
 (defn- test-r-delete-not-found [location]
   (let [response (app (request :delete location))]

@@ -10,6 +10,9 @@
   arrive as strings or integers respectively."
   (if (integer? n) n (Integer/parseInt n)))
 
+(defn- r-readall []
+  (db/get-rec DB_SUBSPACE))
+
 (defn- r-create [points priority title]
   {:pre [(integer? points)
          (integer? priority)
@@ -42,6 +45,10 @@
   (db/del-rec DB_SUBSPACE id))
 
 (defroutes routes
+  (GET "/stories" []
+    (try
+      (let [stories (r-readall)]
+        {:status 200 :body stories})))
   (POST "/stories" [points priority title]
     (try
       (let [points (to-int points)
