@@ -81,6 +81,7 @@
           location (seed-story story)
           response (app (request :get location))
           body (json/parse-string (response :body) true)]
+      (is (= (response :status) 200))
       (is (= body story))))
   (testing "not-found integer"
     (test-r-read-not-found "/stories/666666666"))
@@ -113,6 +114,7 @@
       (is (= (response :status) 204))
       (let [response2 (app (request :get location))
             body2 (json/parse-string (response2 :body) true)]
+        (is (= (response2 :status) 200))
         (is (= body2 story2)))))
   (testing "not-found integer"
     (test-r-update-not-found "/stories/666666666"))
