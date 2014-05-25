@@ -11,30 +11,30 @@
   (if (integer? n) n (Integer/parseInt n)))
 
 (defn- r-create [points priority title]
-  {:pre [(number? points)
-         (number? priority)
+  {:pre [(integer? points)
+         (integer? priority)
          (not (nil? title))]
-   :post [(number? %)]}
+   :post [(integer? %)]}
   (let [id (db/next-id DB_SUBSPACE)
         story {:points points :priority priority :title title}]
     (db/set-rec DB_SUBSPACE id story)
     id))
 
 (defn- r-read [id]
-  {:pre [(number? id)]
+  {:pre [(integer? id)]
    :post [(not (nil? %))]}
   (db/get-rec DB_SUBSPACE id))
 
 (defn- r-update [id points priority title]
-  {:pre [(number? id)
-         (number? points)
-         (number? priority)
+  {:pre [(integer? id)
+         (integer? points)
+         (integer? priority)
          (not (nil? title))]}
   (let [story {:points points :priority priority :title title}]
     (db/set-rec DB_SUBSPACE id story)))
 
 (defn- r-delete [id]
-  {:pre [(number? id)]}
+  {:pre [(integer? id)]}
   (db/del-rec DB_SUBSPACE id))
 
 (defroutes routes
