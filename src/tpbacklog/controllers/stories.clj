@@ -10,8 +10,13 @@
   arrive as strings or integers respectively."
   (if (integer? n) n (Integer/parseInt n)))
 
-(defn- r-readall []
-  (db/get-rec DB_SUBSPACE))
+(defn- r-readall [& {:keys [max-points]}]
+  {:pre [(or (nil? max-points)
+             (and (integer? max-points)
+                  (>= max-points 1)))]}
+  (if max-points
+    (db/get-recs DB_SUBSPACE :max-points max-points)
+    (db/get-recs DB_SUBSPACE)))
 
 (defn- r-create [points priority title]
   {:pre [(integer? points)
@@ -45,8 +50,13 @@
   (db/del-rec DB_SUBSPACE id))
 
 (defroutes routes
-  (GET "/stories" []
-    (try
+  (GET "/stories" [points]
+    (if points
+      (try
+        (let [stories (r-readall :max-points (to-int points))]
+          {:status 200 :body stories})
+        (catch java.lang.NumberFormatException e {:status 400}) ; points invalid
+        (catch java.lang.AssertionError e {:status 400})) ; points invalid
       (let [stories (r-readall)]
         {:status 200 :body stories})))
   (POST "/stories" [points priority title]

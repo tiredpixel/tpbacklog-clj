@@ -60,17 +60,27 @@
       (car/set path-r (pickle-rec rec))
       (car/zadd path-i (rec :priority) id))))
 
-(defn get-rec
-  "Gets a record or records within a subspace."
-  ([subspace id]
+(defn get-rec [subspace id]
+  "Gets a record by id within a subspace."
     {:pre [(integer? id)]}
     (let [path-r (path-rec subspace id)
           rec (wcar* (car/get path-r))]
       (unpickle-rec rec)))
-  ([subspace]
-    (let [path-i (path-idx subspace)
-          rec-ids (wcar* (car/zrange path-i 0 -1))]
-      (map #(get-rec subspace (Integer/parseInt %)) rec-ids))))
+
+(defn get-recs [subspace & {:keys [max-points]}]
+  "Gets records within a subspace."
+  (let [path-i (path-idx subspace)
+        rec-ids (wcar* (car/zrange path-i 0 -1))]
+    (loop [[rec-id & rec-ids-t] rec-ids
+            points 0
+            recs []]
+      (if (empty? rec-id)
+        recs
+        (let [rec (get-rec subspace (Integer/parseInt rec-id))
+              points2 (+ (rec :points) points)]
+          (if (and max-points (> points2 max-points))
+            recs
+            (recur rec-ids-t points2 (conj recs rec))))))))
 
 (defn del-rec [subspace id]
   "Deletes a record by id within a subspace."

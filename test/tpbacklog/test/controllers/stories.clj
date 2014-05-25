@@ -20,21 +20,57 @@
 ; Test r-readall
 
 (deftest test-r-readall-non-empty
-  (testing "non-empty"
-    (let [story1 (assoc STORY_VALID :priority 1)
-          story2 (assoc STORY_VALID :priority 2)
-          story3 (assoc STORY_VALID :priority 3)
-          story4 (assoc STORY_VALID :priority 4)
-          story5 (assoc STORY_VALID :priority 5)
-          location5 (seed-story story5) ; order-dependent
-          location1 (seed-story story1)
-          location2 (seed-story story2)
-          location4 (seed-story story4)
-          location3 (seed-story story3)
-          response (app (request :get "/stories"))
-          body (json/parse-string (response :body) true)]
-      (is (= (response :status) 200))
-      (is (= body [story1 story2 story3 story4 story5])))))
+  (let [story1 (assoc STORY_VALID :priority 1 :points 7)
+        story2 (assoc STORY_VALID :priority 2 :points 11)
+        story3 (assoc STORY_VALID :priority 3 :points 13)
+        location3 (seed-story story3) ; order-dependent
+        location1 (seed-story story1)
+        location2 (seed-story story2)]
+    (testing "non-empty"
+      (let [response (app (request :get "/stories"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body [story1 story2 story3]))))
+    (testing "non-empty points none"
+      (let [response (app (request :get "/stories?points=5"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body []))))
+    (testing "non-empty points one"
+      (let [response (app (request :get "/stories?points=7"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body [story1]))))
+    (testing "non-empty points one mid"
+      (let [response (app (request :get "/stories?points=17"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body [story1]))))
+    (testing "non-empty points two"
+      (let [response (app (request :get "/stories?points=18"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body [story1 story2]))))
+    (testing "non-empty points all high"
+      (let [response (app (request :get "/stories?points=1729"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 200))
+        (is (= body [story1 story2 story3]))))
+    (testing "invalid points -ve"
+      (let [response (app (request :get "/stories?points=-1"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 400))
+        (is (empty? body))))
+    (testing "invalid points 0"
+      (let [response (app (request :get "/stories?points=0"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 400))
+        (is (empty? body))))
+    (testing "invalid points non-number"
+      (let [response (app (request :get "/stories?points=X"))
+            body (json/parse-string (response :body) true)]
+        (is (= (response :status) 400))
+        (is (empty? body))))))
 
 (deftest test-r-readall-empty
   (testing "empty"
