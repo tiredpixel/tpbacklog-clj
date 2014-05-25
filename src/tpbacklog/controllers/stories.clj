@@ -4,6 +4,12 @@
 
 (def DB_SUBSPACE "stories")
 
+(defn- to-int [n]
+  "Utility function to ensure string is converted to integer. This helps with
+  handling requests containing params in the URL vs request body, as these could
+  arrive as strings or integers respectively."
+  (if (integer? n) n (Integer/parseInt n)))
+
 (defn- r-create [points priority title]
   {:pre [(number? points)
          (number? priority)
@@ -34,8 +40,8 @@
 (defroutes routes
   (POST "/stories" [points priority title]
     (try
-      (let [points (Integer/parseInt points)
-            priority (Integer/parseInt priority)
+      (let [points (to-int points)
+            priority (to-int priority)
             id (r-create points priority title)]
         {:status 201
          :headers {
@@ -44,18 +50,18 @@
       (catch java.lang.AssertionError e {:status 400}))) ; story invalid
   (GET "/stories/:id" [id]
     (try
-      (let [id (Integer/parseInt id)
+      (let [id (to-int id)
             story (r-read id)]
         {:status 200 :body story})
       (catch java.lang.NumberFormatException e {:status 404}) ; id invalid
       (catch java.lang.AssertionError e {:status 404}))) ; id invalid
   (PUT "/stories/:id" [id points priority title]
     (try
-      (let [id (Integer/parseInt id)]
+      (let [id (to-int id)]
         (r-read id) ; check exists
         (try
-          (let [points (Integer/parseInt points)
-                priority (Integer/parseInt priority)]
+          (let [points (to-int points)
+                priority (to-int priority)]
             (r-update id points priority title)
             {:status 204})
           (catch java.lang.NumberFormatException e {:status 400}) ; story invalid
@@ -64,7 +70,7 @@
       (catch java.lang.AssertionError e {:status 404}))) ; id invalid
   (DELETE "/stories/:id" [id]
     (try
-      (let [id (Integer/parseInt id)]
+      (let [id (to-int id)]
         (r-read id) ; check exists
         (r-delete id)
         {:status 204})
