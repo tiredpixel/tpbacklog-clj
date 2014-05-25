@@ -13,6 +13,8 @@
 (defn- r-create [points priority title]
   {:pre [(integer? points)
          (integer? priority)
+         (>= priority 1)
+         (<= priority 5)
          (not (nil? title))]
    :post [(integer? %)]}
   (let [id (db/next-id DB_SUBSPACE)
@@ -29,6 +31,8 @@
   {:pre [(integer? id)
          (integer? points)
          (integer? priority)
+         (>= priority 1)
+         (<= priority 5)
          (not (nil? title))]}
   (let [story {:points points :priority priority :title title}]
     (db/set-rec DB_SUBSPACE id story)))

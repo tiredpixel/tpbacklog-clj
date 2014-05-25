@@ -33,6 +33,10 @@
     (test-r-create-invalid (assoc STORY_VALID :points "X")))
   (testing "invalid priority non-integer"
     (test-r-create-invalid (assoc STORY_VALID :priority 1.0)))
+  (testing "invalid priority low-range"
+    (test-r-create-invalid (assoc STORY_VALID :priority 0)))
+  (testing "invalid priority high-range"
+    (test-r-create-invalid (assoc STORY_VALID :priority 6)))
   (testing "invalid title missing"
     (test-r-create-invalid (dissoc STORY_VALID :title))))
 
@@ -88,6 +92,10 @@
     (test-r-update-invalid (assoc STORY_VALID :points "X")))
   (testing "invalid priority non-integer"
     (test-r-update-invalid (assoc STORY_VALID :priority 1.0)))
+  (testing "invalid priority high-range"
+    (test-r-update-invalid (assoc STORY_VALID :priority 6)))
+  (testing "invalid priority low-range"
+    (test-r-update-invalid (assoc STORY_VALID :priority 0)))
   (testing "invalid title missing"
     (test-r-update-invalid (dissoc STORY_VALID :title))))
 
