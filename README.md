@@ -1,6 +1,6 @@
-# tpbacklog
+# tpbacklog (Clojure)
 
-[![Build Status](https://travis-ci.org/tiredpixel/tpbacklog.png?branch=master)](https://travis-ci.org/tiredpixel/tpbacklog)
+[![Build Status](https://travis-ci.org/tiredpixel/tpbacklog-clj.png?branch=master)](https://travis-ci.org/tiredpixel/tpbacklog-clj)
 
 tpbacklog is a simple service for the storage and retrieval of task stories.
 
