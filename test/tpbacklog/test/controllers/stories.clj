@@ -11,7 +11,7 @@
     (db/wcar* (car/flushdb)) ; beware! redis db gets flushed
     (tests)))
 
-(def STORY_VALID {:points 8 :priority 1 :title "Style the iPlayer icon to be more pink."})
+(def STORY_VALID {:points 8 :priority 1 :title "Style the icon to be more pink."})
 
 (defn- seed-story [story]
   (let [response (app (request :post "/stories" story))]

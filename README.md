@@ -1,10 +1,12 @@
 # tpbacklog
 
-tpbacklog is a simple service for the storage and retrieval of task stories. It
-is written in [Clojure](http://clojure.org/).
+[![Build Status](https://travis-ci.org/tiredpixel/tpbacklog.png?branch=master)](https://travis-ci.org/tiredpixel/tpbacklog)
 
-Various resource locations and response codes differ to the brief. See § API for
-details.
+tpbacklog is a simple service for the storage and retrieval of task stories.
+
+This repository has *notebook* status, meaning that it is released in the hope
+it will be useful, but it is not under active development and there are no
+releases planned.
 
 There are many optimizations which could be made. However, as very approximate
 estimates for the current implementation run in development, stories can be
@@ -58,7 +60,6 @@ ensure that there is nothing important in your Redis before running.
 ### GET /
 
 Read service status.
-This is extra to the brief.
 
 #### Parameters
 
@@ -82,8 +83,6 @@ This is extra to the brief.
 ### GET /stories
 
 Read stories, in ascending order of priority (`1` highest).
-This is at a different address to the brief, as the resource is a story, not a
-backlog.
 
 #### Parameters
 
@@ -104,7 +103,7 @@ backlog.
     Content-Length: 117
     Server: Jetty(7.6.13.v20130916)
     
-    [{"points":8,"priority":1,"title":"Style the iPlayer icon to be more pink."},{"points":1,"priority":2,"title":"ZZZ"}]
+    [{"points":8,"priority":1,"title":"Style the icon to be more pink."},{"points":1,"priority":2,"title":"ZZZ"}]
 
 #### Example
 
@@ -116,15 +115,12 @@ backlog.
     Content-Length: 77
     Server: Jetty(7.6.13.v20130916)
     
-    [{"points":8,"priority":1,"title":"Style the iPlayer icon to be more pink."}]
+    [{"points":8,"priority":1,"title":"Style the icon to be more pink."}]
 
 
 ### POST /stories
 
 Create story.
-This is at a different address to the brief, as the resource is a story, not a
-backlog. `201` instead of `200` is returned on success, as `Created` is more
-approriate and a good hint to read header `Location`.
 
 #### Parameters
 
@@ -139,7 +135,7 @@ approriate and a good hint to read header `Location`.
 
 #### Example
 
-    #$ curl -H "Content-type: application/json" -d '{"points":8,"priority":1,"title":"Style the iPlayer icon to be more pink."}' http://localhost:3000/stories -i
+    #$ curl -H "Content-type: application/json" -d '{"points":8,"priority":1,"title":"Style the icon to be more pink."}' http://localhost:3000/stories -i
 
     HTTP/1.1 201 Created
     Date: Sun, 25 May 2014 15:45:59 GMT
@@ -151,8 +147,6 @@ approriate and a good hint to read header `Location`.
 ### GET /stories/:id
 
 Read story.
-This is at a different address to the brief, as the resource is a story, not a
-backlog.
 
 #### Parameters
 
@@ -173,16 +167,13 @@ backlog.
     Content-Length: 75
     Server: Jetty(7.6.13.v20130916)
     
-    {"points":8,"priority":1,"title":"Style the iPlayer icon to be more pink."}
+    {"points":8,"priority":1,"title":"Style the icon to be more pink."}
 
 
 ### PUT /stories/:id
 
 Replace story. Note there is no `PATCH`; partial resource updates are not
 supported.
-This is at a different address to the brief, as the resource is a story, not a
-backlog. `204` instead of `200` is returned on success, as there is no content
-to be returned.
 
 #### Parameters
 
@@ -199,7 +190,7 @@ to be returned.
 
 #### Example
 
-    #$ curl -H "Content-type: application/json" -d '{"points":8,"priority":1,"title":"Style the iPlayer icon to be less pink."}' http://localhost:3000/stories/3 -i -X PUT
+    #$ curl -H "Content-type: application/json" -d '{"points":8,"priority":1,"title":"Style the icon to be less pink."}' http://localhost:3000/stories/3 -i -X PUT
 
     HTTP/1.1 204 No Content
     Date: Sun, 25 May 2014 15:57:04 GMT
@@ -209,9 +200,6 @@ to be returned.
 ### DELETE /stories/:id
 
 Delete story.
-This is at a different address to the brief, as the resource is a story, not a
-backlog. `204` instead of `200` is returned on success, as there is no content
-to be returned.
 
 #### Parameters
 
@@ -283,3 +271,15 @@ Reading all (10000) priority-sorted stories 10 times given 10000 stories:
     Time per request:       945.447 [ms] (mean)
     Time per request:       945.447 [ms] (mean, across all concurrent requests)
     Transfer rate:          805.81 [Kbytes/sec] received
+
+
+## Blessing
+
+May you find peace, and help others to do likewise.
+
+
+## Licence
+
+© [tiredpixel](http://www.tiredpixel.com) 2014.
+It is free software, released under the MIT License, and may be redistributed
+under the terms specified in `LICENSE`.
